@@ -1,9 +1,14 @@
-# NativeBase TypeScript Expo Template
+# K-list
 
-The official NativeBase TypeScript template for [Expo](https://docs.expo.io/)
+Um app simples de To-Do List.
 
-## Usage
+# Bibliotecas utilizadas
+    - React Navigation
+## Como rodar o projeto
 
 ```sh
-expo init my-app --template @native-base/expo-template-typescript
+clone o repositório
+rode o comando 'yarn expo install'
+rode o comando 'yarn expo start'
+abra o projeto em um simulador ou conecte um celular via cabo usb e ative a depuração por usb
 ```

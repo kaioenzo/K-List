@@ -1,7 +1,6 @@
+import { extendTheme, NativeBaseProvider } from "native-base";
 import React from "react";
-import { NativeBaseProvider, extendTheme } from "native-base";
-import Home from "./src/screens/Home";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Routes from "./src/navigation/Routes";
 
 // Define the config
 const config = {
@@ -18,9 +17,7 @@ declare module "native-base" {
 export default function App() {
   return (
     <NativeBaseProvider>
-      <SafeAreaView>
-        <Home />
-      </SafeAreaView>
+      <Routes />
     </NativeBaseProvider>
   );
 }
