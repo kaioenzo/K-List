@@ -5,8 +5,6 @@ import {
   HStack,
   Center,
   Heading,
-  Switch,
-  useColorMode,
   NativeBaseProvider,
   extendTheme,
   VStack,
@@ -26,7 +24,7 @@ type MyThemeType = typeof theme;
 declare module "native-base" {
   interface ICustomTheme extends MyThemeType {}
 }
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <NativeBaseProvider>
       <Center
