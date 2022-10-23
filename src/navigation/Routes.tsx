@@ -1,7 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import BasePage from "../components/BasePage";
+import CreateTask from "../screens/CreateTask";
+import Home from "../screens/Home";
 const Stack = createNativeStackNavigator();
 export default function Routes(): JSX.Element {
   return (
@@ -9,7 +10,12 @@ export default function Routes(): JSX.Element {
       <Stack.Navigator>
         <Stack.Screen
           name="HomeRoutes"
-          component={BasePage}
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CreateTask"
+          component={CreateTask}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

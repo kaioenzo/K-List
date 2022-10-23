@@ -1,9 +1,10 @@
-import { Box, Text } from "native-base";
+import { Input } from "native-base";
 import React from "react";
-export default function Account() {
+import BasePage from "../components/BasePage";
+export default function CreateTask() {
   return (
-    <Box>
-      <Text>CreateTask page</Text>
-    </Box>
+    <BasePage>
+      <Input type="text" />
+    </BasePage>
   );
 }
