@@ -1,7 +1,8 @@
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { extendTheme, NativeBaseProvider } from "native-base";
 import React from "react";
-import Routes from "./src/navigation/Routes";
-
+import Home from "./src/screens/Home";
 // Define the config
 const config = {
   useSystemColorMode: false,
@@ -14,10 +15,19 @@ type MyThemeType = typeof theme;
 declare module "native-base" {
   interface ICustomTheme extends MyThemeType {}
 }
+const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NativeBaseProvider>
-      <Routes />
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            component={Home}
+            name="HomeRoute"
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </NativeBaseProvider>
   );
 }

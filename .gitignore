@@ -8,6 +8,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-
+./node_modules/prettier/bin-prettier.js --write .
+yarn-error.log
 # macOS
 .DS_Store

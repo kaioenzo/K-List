@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import Account from "./Account";
+import CreateTask from "./CreateTask";
 import HomeTask from "./HomeTask";
 
 export default function Home() {
@@ -11,12 +12,20 @@ export default function Home() {
       <Tab.Screen
         name="Home"
         component={HomeTask}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        component={CreateTask}
+        name="CreateTask"
+        options={{
+          headerShown: false,
+          title: "",
+        }}
       />
       <Tab.Screen
         name="Account"
         component={Account}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
     </Tab.Navigator>
   );
