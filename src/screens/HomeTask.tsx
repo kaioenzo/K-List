@@ -1,9 +1,9 @@
-import { Box, Text } from "native-base";
+import { Text, VStack } from "native-base";
 import React from "react";
 export default function HomeTask() {
   return (
-    <Box>
+    <VStack safeAreaX flex={1}>
       <Text>Teste</Text>
-    </Box>
+    </VStack>
   );
 }
