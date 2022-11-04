@@ -1,4 +1,5 @@
 import { Entypo, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import {
   Box,
   Button,
@@ -11,18 +12,36 @@ import {
   Switch,
   Text,
   TextArea,
+  View,
   VStack,
 } from "native-base";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 export default function CreateTask() {
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // For DatePicker
+  const onChangeDatePickerDate = (event: unknown, selectedDate?: Date) => {
+    const currentDate = new Date(selectedDate ?? date);
+    setValue("date", currentDate.toDateString());
+    trigger("date");
+
+    setShowDatePicker(Platform.OS === "ios");
+    setDate(currentDate);
+  };
+  const showDatepicker = () => {
+    setShowDatePicker(true);
+  };
+
   const windowHeight = Dimensions.get("window").height;
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
+    trigger,
   } = useForm({
     defaultValues: {
       taskName: "",
@@ -39,7 +58,8 @@ export default function CreateTask() {
     taskDescription: string;
     notifyMe: boolean;
   };
-  console.log(errors.notifyMe);
+
+  // console.log(errors.notifyMe);
   const onSubmit = (data: formProps) => console.log(data);
 
   return (
@@ -121,6 +141,7 @@ export default function CreateTask() {
                       placeholder="Time"
                       onBlur={onBlur}
                       onChangeText={onChange}
+                      onTouchStart={showDatepicker}
                       value={value}
                       InputLeftElement={
                         <Icon
@@ -137,6 +158,17 @@ export default function CreateTask() {
                   {errors.date?.message}
                 </FormControl.ErrorMessage>
               </FormControl>
+              <View>
+                {showDatePicker && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode="date"
+                    is24Hour
+                    onChange={onChangeDatePickerDate}
+                  />
+                )}
+              </View>
 
               <FormControl>
                 <Controller
