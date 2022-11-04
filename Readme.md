@@ -6,6 +6,7 @@ Um app simples de To-Do List.
     - React Navigation
     - React Hook Form
     - Native Base UI
+    - Dayjs
 ## Como rodar o projeto
 
 ```sh
