@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import Category from "./Category";
-import CreateTask from "./CreateTask";
 export default function TaskRoutes() {
   const TaskNavigation = createNativeStackNavigator();
 
@@ -10,11 +9,6 @@ export default function TaskRoutes() {
       <TaskNavigation.Screen
         name="Category"
         component={Category}
-        options={{ headerShown: false }}
-      />
-      <TaskNavigation.Screen
-        name="CreateTask"
-        component={CreateTask}
         options={{ headerShown: false }}
       />
     </TaskNavigation.Navigator>

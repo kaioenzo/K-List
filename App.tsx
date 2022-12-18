@@ -2,6 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { extendTheme, NativeBaseProvider } from "native-base";
 import React from "react";
+import { CreateTask } from "./src/screens/CreateTask";
 import Home from "./src/screens/Home";
 // Define the config
 const config = {
@@ -24,6 +25,11 @@ export default function App() {
           <Stack.Screen
             component={Home}
             name="HomeRoute"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CreateTask"
+            component={CreateTask}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

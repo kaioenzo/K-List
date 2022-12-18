@@ -18,16 +18,18 @@ import {
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Dimensions, Platform } from "react-native";
-export default function CreateTask() {
+import { addNote } from "../services/NotesService";
+import { NoteProps } from "../types";
+
+export function CreateTask({ route }) {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-
+  const category = route.params.category;
   // For DatePicker
   const onChangeDatePickerDate = (event: unknown, selectedDate?: Date) => {
     const currentDate = new Date(selectedDate ?? date);
     setValue("date", currentDate.toDateString());
     trigger("date");
-
     setShowDatePicker(Platform.OS === "ios");
     setDate(currentDate);
   };
@@ -42,25 +44,21 @@ export default function CreateTask() {
     formState: { errors },
     setValue,
     trigger,
-  } = useForm({
+  } = useForm<NoteProps>({
     defaultValues: {
-      taskName: "",
-      taskDescription: "",
+      title: "",
+      description: "",
       date: new Date().toDateString(),
-      notifyMe: true,
+      notify: true,
+      done: false,
     },
   });
 
-  type formProps = {
-    taskName: string;
-    //TODO -SEND INSTANCE OF DAYJS
-    date: string;
-    taskDescription: string;
-    notifyMe: boolean;
-  };
-
   // console.log(errors.notifyMe);
-  const onSubmit = (data: formProps) => console.log(data);
+  const onSubmit = async (data: NoteProps) => {
+    console.log(data);
+    await addNote(data);
+  };
 
   return (
     <ScrollView backgroundColor="white">
@@ -75,9 +73,9 @@ export default function CreateTask() {
           <Box flex={1}>
             <Box mt={5} mx={6}>
               <Heading my={4}>Create a new task</Heading>
-              <FormControl isRequired isInvalid={"taskName" in errors}>
+              <FormControl isRequired isInvalid={"title" in errors}>
                 <Controller
-                  name="taskName"
+                  name="title"
                   control={control}
                   rules={{ required: "Field is required", minLength: 1 }}
                   render={({ field: { onChange, onBlur, value } }) => (
@@ -100,12 +98,12 @@ export default function CreateTask() {
                   )}
                 />
                 <FormControl.ErrorMessage>
-                  {errors.taskName?.message}
+                  {errors.title?.message}
                 </FormControl.ErrorMessage>
               </FormControl>
-              <FormControl isRequired isInvalid={"taskDescription" in errors}>
+              <FormControl isRequired isInvalid={"description" in errors}>
                 <Controller
-                  name="taskDescription"
+                  name="description"
                   control={control}
                   rules={{ required: "Field is required", minLength: 1 }}
                   render={({ field: { onChange, onBlur, value } }) => (
@@ -126,7 +124,7 @@ export default function CreateTask() {
                   )}
                 />
                 <FormControl.ErrorMessage>
-                  {errors.taskDescription?.message}
+                  {errors.description?.message}
                 </FormControl.ErrorMessage>
               </FormControl>
               <FormControl isRequired isInvalid={"date" in errors}>
@@ -172,7 +170,7 @@ export default function CreateTask() {
 
               <FormControl>
                 <Controller
-                  name="notifyMe"
+                  name="notify"
                   control={control}
                   render={({ field: { value } }) => (
                     <HStack
@@ -184,18 +182,13 @@ export default function CreateTask() {
                       <Switch
                         defaultIsChecked
                         size="md"
-                        onValueChange={(state) => setValue("notifyMe", state)}
+                        onValueChange={(state) => setValue("notify", state)}
                         value={value}
                       />
                     </HStack>
                   )}
                 />
               </FormControl>
-
-              {/* <HStack alignItems="center" justifyContent="space-between" mx={4}>
-                <Text>Notify me</Text>
-                <Switch defaultIsChecked size="md" onThumbColor="indigo.500" />
-              </HStack> */}
               <Button
                 leftIcon={<Icon as={Entypo} name="plus" size="sm" />}
                 mx={10}

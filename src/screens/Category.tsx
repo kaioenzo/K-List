@@ -4,7 +4,7 @@ import { Button, FlatList, HStack, Icon, Text, View } from "native-base";
 import React from "react";
 
 export default function Category() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const categories = [
     {
       category: "Work",
@@ -33,7 +33,11 @@ export default function Category() {
           data={categories}
           keyExtractor={(item, index) => item.category + index}
           renderItem={({ item }) => (
-            <Button onPress={() => navigation.navigate("CreateTask", {})}>
+            <Button
+              onPress={() => {
+                navigation.navigate("CreateTask", { category: item.category });
+              }}
+            >
               <Text>{item.category}</Text>
               <Icon
                 as={<item.icon.provider name={`${item.icon.name}`} />}
