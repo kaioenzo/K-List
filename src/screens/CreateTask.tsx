@@ -51,13 +51,14 @@ export function CreateTask({ route }) {
       date: new Date().toDateString(),
       notify: true,
       done: false,
+      category: route.params.category,
     },
   });
 
-  // console.log(errors.notifyMe);
   const onSubmit = async (data: NoteProps) => {
-    console.log(data);
-    await addNote(data);
+    const nota = data;
+    nota.category = route.params.category;
+    await addNote(nota);
   };
 
   return (
