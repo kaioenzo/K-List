@@ -1,6 +1,8 @@
-import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+/* eslint-disable react/no-unstable-nested-components */
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
+import TabBarIcon from "../components/TabBarIcon";
 import Account from "./Account";
 import HomeTask from "./HomeTask";
 import TaskRoutes from "./TaskRoutes";
@@ -30,18 +32,8 @@ export default function Home() {
         options={{
           headerShown: false,
           title: "",
-          tabBarIcon: ({ color, size }) => {
-            return (
-              <Ionicons
-                style={{
-                  position: "absolute",
-                  bottom: -10,
-                }}
-                name="ios-add-circle"
-                color={color}
-                size={size + 40}
-              />
-            );
+          tabBarIcon: ({ focused, color, size }) => {
+            return <TabBarIcon color={color} size={size} focused={focused} />;
           },
           tabBarActiveTintColor: "#6135BC",
         }}
