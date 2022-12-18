@@ -35,6 +35,7 @@ export default function HomeTask() {
       </Box>
       <FlatList
         backgroundColor="white"
+        keyExtractor={(item, index) => item.title + index}
         borderTopRadius={50}
         data={toDos}
         renderItem={(item) => (

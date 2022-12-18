@@ -1,52 +1,57 @@
-import { FontAwesome, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Button, FlatList, HStack, Icon, Text, View } from "native-base";
+import { Box, Button, FlatList, Icon, Text, View, VStack } from "native-base";
 import React from "react";
 
 export default function Category() {
   const navigation = useNavigation<any>();
-  const categories = [
+  const categoriesData = [
     {
       category: "Work",
-      icon: { provider: MaterialIcons, name: "work" },
+      icon: { provider: MaterialIcons, namee: "work-outline" },
     },
     {
       category: "Life",
-      icon: { provider: FontAwesome, name: "heart" },
+      icon: { provider: FontAwesome, namee: "heart-o" },
     },
     {
       category: "Personal",
-      icon: { provider: FontAwesome5, name: "user-alt" },
+      icon: { provider: AntDesign, namee: "user" },
     },
   ];
-  type categories = {
-    category: string;
-    icon: {
-      provider: typeof Icon;
-      name: string;
-    };
-  }[];
+
   return (
     <View>
-      <HStack safeAreaY>
+      <VStack safeAreaY>
         <FlatList
-          data={categories}
+          data={categoriesData}
+          numColumns={2}
           keyExtractor={(item, index) => item.category + index}
           renderItem={({ item }) => (
             <Button
+              borderRadius="lg"
+              shadow="7"
+              backgroundColor="#ebf4f3"
+              m={2}
+              py={10}
+              flexGrow={1}
               onPress={() => {
-                navigation.navigate("CreateTask", { category: item.category });
+                navigation.navigate("CreateTask", {
+                  category: item.category,
+                });
               }}
             >
-              <Text>{item.category}</Text>
-              <Icon
-                as={<item.icon.provider name={`${item.icon.name}`} />}
-                size={5}
-              />
+              <Box alignItems="center">
+                <Icon
+                  as={<item.icon.provider name={`${item.icon.namee}`} />}
+                  size="5xl"
+                />
+                <Text>{item.category}</Text>
+              </Box>
             </Button>
           )}
         />
-      </HStack>
+      </VStack>
     </View>
   );
 }
