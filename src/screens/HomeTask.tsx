@@ -1,4 +1,4 @@
-import { FlatList, Text, VStack } from "native-base";
+import { Box, FlatList, Text, VStack } from "native-base";
 import React, { useEffect, useState } from "react";
 import NoteCard from "../components/NoteCard";
 import { createTable, showNotes } from "../services/NotesService";
@@ -27,9 +27,15 @@ export default function HomeTask() {
     );
   }
   return (
-    <VStack safeAreaY flex={1}>
-      <Text>Teste</Text>
+    <VStack safeAreaY flex={1} background={"#6135bc"}>
+      <Box pb={48}>
+        <Text fontSize="xl" bold color="white">
+          Hi, Kaio
+        </Text>
+      </Box>
       <FlatList
+        backgroundColor="white"
+        borderTopRadius={50}
         data={toDos}
         renderItem={(item) => (
           <>
@@ -42,7 +48,6 @@ export default function HomeTask() {
               notify={item.item.notify}
               id={item.item.id}
             />
-            <Text>Oi</Text>
           </>
         )}
       />
