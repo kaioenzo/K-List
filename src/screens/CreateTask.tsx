@@ -19,12 +19,13 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Dimensions, Platform } from "react-native";
 import { addNote } from "../services/NotesService";
-import { NoteProps } from "../types";
+import { NoteProps, StackNativeScreenProps } from "../types";
 
-export function CreateTask({ route }) {
+type CreateTaskType = StackNativeScreenProps<"CreateTask">;
+
+export function CreateTask({ route }: CreateTaskType) {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const category = route.params.category;
   // For DatePicker
   const onChangeDatePickerDate = (event: unknown, selectedDate?: Date) => {
     const currentDate = new Date(selectedDate ?? date);

@@ -1,10 +1,13 @@
 import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Box, Button, FlatList, Icon, Text, View, VStack } from "native-base";
 import React from "react";
+import { RootStackParamList } from "../types";
 
 export default function Category() {
-  const navigation = useNavigation<any>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const categoriesData = [
     {
       category: "Work",
