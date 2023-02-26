@@ -1,56 +1,112 @@
-import { Box, Button, Checkbox, Text } from "native-base";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Icon,
+  IconButton,
+  Pressable,
+  Text,
+} from "native-base";
 import React, { useState } from "react";
-import { setDoneState } from "../services/NotesService";
-import { NotePropsFromDB } from "../types";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { Note } from "../models/Note";
+import { useNoteStore } from "../repository/Store";
 
-function NoteCard(data: NotePropsFromDB) {
-  const [done, setDone] = useState(data.done === `TRUE` ? true : false);
-  const [groupValues, setGroupValues] = useState([
-    data.done === `TRUE` ? `TRUE` : `FALSE`,
-  ]);
+function NoteCard(data: Note) {
+  const { setNoteDone, deleteNote } = useNoteStore();
+  const [state, setState] = useState(data.done);
+  const animation = useSharedValue(0);
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: animation.value }],
+    };
+  });
+
+  const handlePress = () => {
+    animation.value = withTiming(10, { duration: 200 });
+    animation.value = withTiming(-10, { duration: 200 });
+    animation.value = withTiming(0, { duration: 200 });
+    deleteNote(data.id);
+  };
 
   return (
     <Box flex={1} flexDirection="row" justifyContent="flex-start" mx={8} my={4}>
       <Box>
-        <Text>{data.date}</Text>
-        <Checkbox.Group
+        <Text>{data.hour.slice(0, 5)}</Text>
+        <Checkbox
+          icon={<Icon as={MaterialIcons} name="done" color="green" />}
+          value="TRUE"
+          colorScheme="green"
+          borderRadius="full"
+          my={2}
+          size="lg"
           accessibilityLabel="check your activitie to did"
-          onChange={(values) => {
-            setGroupValues(values);
-            if (groupValues.find((v) => v === `TRUE`)) {
-              setDoneState(false, data.id);
-              setDone(false);
-            } else {
-              setDone(true);
-              setDoneState(true, data.id);
-            }
+          isChecked={state}
+          onChange={(_) => {
+            setState((_state) => !_state);
+            setNoteDone(data.id);
           }}
-          value={groupValues}
-        >
-          <Checkbox
-            value="TRUE"
-            my={2}
-            accessibilityLabel={data.title}
-            isChecked={done}
-          />
-        </Checkbox.Group>
+        />
       </Box>
-      <Box ml={4} flexDirection="column" flexGrow={1} shadow={2}>
-        <Text>{data.title}</Text>
-        <Text>{data.description}</Text>
-        {done && (
+
+      <Box ml={6} flexDirection="column" w="79px" flexGrow={1} shadow={2}>
+        <Pressable>
+          {({ isHovered, isPressed }) => {
+            return (
+              <Box
+                style={{
+                  transform: [
+                    {
+                      scale: isPressed ? 0.96 : 1,
+                    },
+                  ],
+                }}
+              >
+                <Text strikeThrough={state} bold>
+                  {data.title}
+                </Text>
+                <Text
+                  color="#666666"
+                  strikeThrough={state}
+                  numberOfLines={5}
+                  flex={1}
+                >
+                  {data.description}
+                </Text>
+                <Box flexDir="row">
+                  <Text bold>Category: </Text>
+                  <Text>{data.category}</Text>
+                </Box>
+              </Box>
+            );
+          }}
+        </Pressable>
+      </Box>
+
+      <Box>
+        <Animated.View style={animatedStyles}>
+          <IconButton
+            onPress={handlePress}
+            icon={<Icon as={Entypo} name="trash" color="#D11A2A" />}
+          />
+        </Animated.View>
+
+        {state && (
           <Button
-            position="absolute"
-            alignSelf="flex-end"
+            alignSelf="flex-start"
             al
             size="xs"
             p={1}
             borderRadius="full"
             bgColor="#01cb48"
-            mt={8}
           >
             <Text color={"white"} fontSize="xs" mx={1}>
-              Complete
+              Done
             </Text>
           </Button>
         )}

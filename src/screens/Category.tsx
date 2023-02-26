@@ -1,4 +1,10 @@
-import { AntDesign, FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Entypo,
+  Feather,
+  FontAwesome,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Box, Button, FlatList, Icon, Text, View, VStack } from "native-base";
@@ -17,9 +23,11 @@ export default function Category() {
       category: "Life",
       icon: { provider: FontAwesome, namee: "heart-o" },
     },
+    { category: "Home", icon: { provider: Feather, namee: "home" } },
+    { category: "Study", icon: { provider: AntDesign, namee: "book" } },
     {
-      category: "Personal",
-      icon: { provider: AntDesign, namee: "user" },
+      category: "Others",
+      icon: { provider: Entypo, namee: "dots-three-horizontal" },
     },
   ];
 

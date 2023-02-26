@@ -1,5 +1,6 @@
 import { Entypo, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import dayjs from "dayjs";
 import {
   Box,
   Button,
@@ -12,30 +13,47 @@ import {
   Switch,
   Text,
   TextArea,
+  useToast,
   View,
   VStack,
 } from "native-base";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Dimensions, Platform } from "react-native";
+import { useNoteStore } from "../repository/Store";
 import { addNote } from "../services/NotesService";
 import { NoteProps, StackNativeScreenProps } from "../types";
 
 type CreateTaskType = StackNativeScreenProps<"CreateTask">;
 
-export function CreateTask({ route }: CreateTaskType) {
+export function CreateTask({ route, navigation }: CreateTaskType) {
+  const [isSaving, setIsSaving] = useState(false);
   const [date, setDate] = useState(new Date());
+  const [hour, setHour] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  // For DatePicker
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  // For DatePicker and TimePicker
   const onChangeDatePickerDate = (event: unknown, selectedDate?: Date) => {
     const currentDate = new Date(selectedDate ?? date);
-    setValue("date", currentDate.toDateString());
+    setValue("date", dayjs(currentDate).format("DD/MM/YYYY"));
     trigger("date");
     setShowDatePicker(Platform.OS === "ios");
     setDate(currentDate);
   };
+  const onChangeTimePickerTime = (event: unknown, selectedTime?: Date) => {
+    const currentHour = new Date(selectedTime ?? date);
+    setValue("hour", dayjs(currentHour).format("HH:mm"));
+    trigger("hour");
+    setShowTimePicker(Platform.OS === "ios");
+    setDate(currentHour);
+  };
   const showDatepicker = () => {
     setShowDatePicker(true);
+  };
+
+  const showTimepicker = () => {
+    setShowTimePicker(true);
   };
 
   const windowHeight = Dimensions.get("window").height;
@@ -49,17 +67,29 @@ export function CreateTask({ route }: CreateTaskType) {
     defaultValues: {
       title: "",
       description: "",
-      date: new Date().toDateString(),
+      date: dayjs().format("DD/MM/YYYY"),
+      hour: new Date().toLocaleTimeString(),
       notify: true,
       done: false,
       category: route.params.category,
     },
   });
+  const addTask = useNoteStore();
+  const toast = useToast();
 
   const onSubmit = async (data: NoteProps) => {
+    setIsSaving(true);
     const nota = data;
     nota.category = route.params.category;
-    await addNote(nota);
+    console.log(nota);
+    const notFromDB = await addNote(nota);
+    addTask.add(notFromDB);
+    setIsSaving(false);
+    toast.show({
+      duration: 2500,
+      description: "Nota adicionada com sucesso!",
+    });
+    navigation.popToTop();
   };
 
   return (
@@ -79,7 +109,7 @@ export function CreateTask({ route }: CreateTaskType) {
                 <Controller
                   name="title"
                   control={control}
-                  rules={{ required: "Field is required", minLength: 1 }}
+                  rules={{ required: "Title is required", minLength: 1 }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       type="text"
@@ -107,7 +137,7 @@ export function CreateTask({ route }: CreateTaskType) {
                 <Controller
                   name="description"
                   control={control}
-                  rules={{ required: "Field is required", minLength: 1 }}
+                  rules={{ required: "Description is required", minLength: 1 }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextArea
                       type="text"
@@ -122,6 +152,7 @@ export function CreateTask({ route }: CreateTaskType) {
                         <Icon as={<Entypo name="text" />} size={5} mr={3} />
                       }
                       my={4}
+                      autoCompleteType={undefined}
                     />
                   )}
                 />
@@ -133,7 +164,14 @@ export function CreateTask({ route }: CreateTaskType) {
                 <Controller
                   name="date"
                   control={control}
-                  rules={{ required: "Field is required" }}
+                  rules={{
+                    required: "Date is required",
+                    validate: {
+                      validDate: (v) =>
+                        dayjs(v, "DD/MM/YYYY").isValid() ||
+                        "Incorrect format of date",
+                    },
+                  }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <Input
                       type="text"
@@ -170,6 +208,48 @@ export function CreateTask({ route }: CreateTaskType) {
                 )}
               </View>
 
+              <FormControl isRequired isInvalid={"hour" in errors}>
+                <Controller
+                  name="hour"
+                  control={control}
+                  rules={{ required: "Choose a hour to your task!" }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      type="text"
+                      variant="underlined"
+                      placeholder="Time"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      onTouchStart={showTimepicker}
+                      value={value}
+                      InputLeftElement={
+                        <Icon
+                          as={<MaterialIcons name="access-alarm" />}
+                          size={5}
+                          mr={3}
+                        />
+                      }
+                      my={4}
+                    />
+                  )}
+                />
+                <FormControl.ErrorMessage>
+                  {errors.date?.message}
+                </FormControl.ErrorMessage>
+              </FormControl>
+              <View>
+                {showTimePicker && (
+                  <DateTimePicker
+                    testID="hourTimePicker"
+                    value={hour}
+                    mode="time"
+                    is24Hour
+                    onTouchCancel={() => setShowTimePicker(false)}
+                    onChange={onChangeTimePickerTime}
+                  />
+                )}
+              </View>
+
               <FormControl>
                 <Controller
                   name="notify"
@@ -196,6 +276,8 @@ export function CreateTask({ route }: CreateTaskType) {
                 mx={10}
                 my={4}
                 borderRadius={"full"}
+                isLoadingText="Salvando"
+                isLoading={isSaving}
                 size="lg"
                 backgroundColor="indigo.800"
                 onPress={handleSubmit(onSubmit)}

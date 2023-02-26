@@ -17,6 +17,7 @@ export type StackNativeScreenProps<T extends keyof RootStackParamList> =
 export type NoteProps = {
   title: string;
   date: string;
+  hour: string;
   description: string;
   category: string;
   done: boolean;
@@ -27,8 +28,11 @@ export type NotePropsFromDB = {
   id: number;
   title: string;
   date: string;
+  hour: string;
   description: string;
   category: string;
   done: string;
   notify: string;
 };
+
+export type category = "ALL" | "HOME" | "WORK" | "STUDY" | "LIFE" | "OTHERS";
